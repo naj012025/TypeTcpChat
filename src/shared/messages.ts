@@ -9,7 +9,7 @@ export interface AuthRequest {
 }
 
 export interface AuthResponse {
-    type: AuthResponse;
+    type: "AuthResponse";
     success: boolean;
     message: string;
 }
