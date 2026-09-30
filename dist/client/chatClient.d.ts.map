@@ -1,0 +1,1 @@
+{"version":3,"file":"chatClient.d.ts","sourceRoot":"","sources":["../../src/client/chatClient.ts"],"names":[],"mappings":"AAIA,qBAAa,UAAU;IACtB,OAAO,CAAC,MAAM,CAAqB;IACtB,KAAK,CAAC,IAAI,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC,CAY5D;IACD,OAAO,CAAC,OAAO;YAOD,YAAY;YAsBZ,WAAW;YAeX,QAAQ;CAYtB"}

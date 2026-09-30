@@ -1,0 +1,17 @@
+[
+  {
+    "userName": "Banan",
+    "salt": "KwGjasVPwHwfBVXHkt+wMQ==",
+    "passwordHash": "P33dIbaM1oThV4g7pQw/UefVhi4RcIOK4TzQvPPUqWk="
+  },
+  {
+    "userName": "Test",
+    "salt": "AInxV/1YhIA02CKwrS9nzQ==",
+    "passwordHash": "EN7cG9xKEmbUiOvYb9cMPFv/qzeWyGWf+o3BIzXHtjA="
+  },
+  {
+    "userName": "Banan2",
+    "salt": "K3RrVSx8a6oJoDNltw9y7Q==",
+    "passwordHash": "TC8UTSDXjJjp5HnaL2vsdbFwC8O6WiPZ/X+LvIg1SEs="
+  }
+]

@@ -1,39 +1,34 @@
-
-import { createServer, type  Server, type Socket } from "node:net";
-import type { AuthRequest, ChatSendRequest } from "../shared/messages.js";
+import { createServer } from "node:net";
 import { ClientConnection } from "./clientConnection.js";
 import { AuthenticationService } from "./authenticationService.js";
 import { MessageDispatcher } from "./messageDispatcher.js";
-
 export class ChatServer {
-    private readonly clients = new Set<ClientConnection>();
-    private readonly server: Server;
-
-    public constructor(
-        private readonly authService: AuthenticationService,
-        private readonly dispatcher: MessageDispatcher
-    ) {
-        this.server = createServer( socket => {
+    authService;
+    dispatcher;
+    clients = new Set();
+    server;
+    constructor(authService, dispatcher) {
+        this.authService = authService;
+        this.dispatcher = dispatcher;
+        this.server = createServer(socket => {
             void this.handleClient(socket);
         });
     }
     //the () => means this function takes 0 parameters.
     //  not run this block of code that i thought.
-    public start(port: number, host = "0.0.0.0"): void {
+    start(port, host = "0.0.0.0") {
         this.server.listen(port, host, () => {
-        console.log(`server listening on ${host}:${port}`);
+            console.log("server listening on $(host):$(port)");
         });
     }
-
-    private async handleClient(socket: Socket): Promise<void> {
+    async handleClient(socket) {
         const connection = new ClientConnection(socket);
         let authenticated = false;
         //or each complete line that asynchronously arrives from this client's TCP 
         // connection, put it in line and execute the code inside { }.
         try {
             for await (const line of connection.lines()) {
-                const parsed: unknown = JSON.parse(line);
-
+                const parsed = JSON.parse(line);
                 if (!authenticated) {
                     const request = this.asAuthRequest(parsed);
                     if (!request) {
@@ -44,61 +39,47 @@ export class ChatServer {
                         });
                         continue;
                     }
-
-                const response = await this.authService.authenticate(request);
-                    
-                connection.send(response);
-
-                    if (!response.success) {
-                        continue;
-                    }
-                    
                     connection.userName = request.userName;
                     authenticated = true;
-                    this.clients.add(connection)
+                    this.clients.add(connection);
                     this.dispatcher.joined(this.clients, request.userName);
-
                     continue;
                 }
                 const chat = this.asChatSendRequest(parsed);
                 if (!chat || !connection.userName) {
                     continue;
                 }
-
                 this.dispatcher.chat(this.clients, connection.userName, chat.text);
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error("client connection failed:", error);
-        } finally {
+        }
+        finally {
             if (this.clients.delete(connection) && connection.userName) {
                 this.dispatcher.left(this.clients, connection.userName);
             }
             connection.destroy();
         }
     }
-
-    private asAuthRequest(value: unknown): AuthRequest | undefined {
-        if (!value || typeof value !== "object") return undefined;
-        const v = value as Record<string, unknown>;
-
-        if (
-        (v.type === "Login" || v.type === "Register") &&
-        typeof v.userName === "string" &&
-        typeof v.password === "string"
-        ) {
-        return v as unknown as AuthRequest;
+    asAuthRequest(value) {
+        if (!value || typeof value !== "object")
+            return undefined;
+        const v = value;
+        if ((v.type === "Login" || v.type === "Register") &&
+            typeof v.userName === "string" &&
+            typeof v.password === "string") {
+            return v;
         }
-
         return undefined;
-        }
-
-        private asChatSendRequest(value: unknown): ChatSendRequest | undefined {
-        if (!value || typeof value !== "object") return undefined;
-        const v = value as Record<string, unknown>;
-
+    }
+    asChatSendRequest(value) {
+        if (!value || typeof value !== "object")
+            return undefined;
+        const v = value;
         return v.type === "Chat" && typeof v.text === "string"
-        ? (v as unknown as ChatSendRequest)
-        : undefined;
-
+            ? v
+            : undefined;
     }
 }
+//# sourceMappingURL=chatServer.js.map
