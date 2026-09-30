@@ -32,6 +32,7 @@ export async function* readLines(socket: Socket): AsyncGenerator<string> {
     }
 }
 
+//This is basicly Streamreader from dotnet just have to make it in ts.
 export class LineReader {
     private readonly iterator: AsyncIterator<string>;
     

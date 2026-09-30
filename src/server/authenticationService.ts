@@ -32,7 +32,6 @@ export class AuthenticationService {
     });
 
     await this.userStore.saveAll(users);
-    
     return {type: "AuthResponse", success: true, message: "Registration successful." };
     }
 
